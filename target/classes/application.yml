@@ -1,1 +1,19 @@
-spring.application.name=projeto-erudio
+
+spring:
+  application:
+    name: projeto-erudio
+  jpa:
+    database: POSTGRESQL
+    hibernate:
+      ddl-auto: update
+      properties:
+        hibernate:
+          show-sql: true
+          format-sql: true
+    open-in-view: false
+  datasource:
+    url: jdbc:postgresql://localhost:5433/projeto-erudio
+    username: postgres
+    password: postgres
+
+
