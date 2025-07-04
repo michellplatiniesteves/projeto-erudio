@@ -15,5 +15,8 @@ spring:
     url: jdbc:postgresql://localhost:5433/projeto-erudio
     username: postgres
     password: postgres
+logging:
+  level:
+    br.com.erudio: DEBUG
 
 
