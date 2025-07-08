@@ -28,4 +28,6 @@ public class Person implements Serializable {
     private String email;
     @Column
     private String endereco;
+    @Column
+    private String genero;
 }

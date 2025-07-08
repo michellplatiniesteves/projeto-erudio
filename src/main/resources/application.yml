@@ -15,8 +15,12 @@ spring:
     url: jdbc:postgresql://localhost:5433/projeto-erudio
     username: postgres
     password: postgres
+  flyway:
+    baseline-on-migrate: true
+    baseline-version: '0'
 logging:
   level:
     br.com.erudio: DEBUG
+
 
 
