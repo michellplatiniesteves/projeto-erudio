@@ -45,14 +45,16 @@ public class LivroService {
 
     public LivroDTO salvarLivro(LivroDTO livro) {
         logger.info("Salvando os livros");
-        var dto = parseObject(livroRepository.save(parseObject(LivroDTO.class,Livro.class)),LivroDTO.class);
+        var entity = parseObject(livro,Livro.class);
+        entity = livroRepository.save(entity);
+        var dto = parseObject(entity,LivroDTO.class);
         addHateoasLinks(dto);
         return dto;
     }
 
     public LivroDTO atualizarLivro(LivroDTO livro) {
         logger.info("Atualizando os livros");
-        var entity = parseObject(LivroDTO.class,Livro.class);
+        var entity = parseObject(livro,Livro.class);
         var dto = parseObject(livroRepository.save(entity),LivroDTO.class);
         addHateoasLinks(dto);
         return dto;

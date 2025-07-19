@@ -26,6 +26,8 @@ public class PersonDTO extends RepresentationModel<PersonDTO>implements Serializ
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String genero;
 
+    private Boolean ativo;
+
     private String cpf;
     public PersonDTO() {
     }
@@ -94,15 +96,39 @@ public class PersonDTO extends RepresentationModel<PersonDTO>implements Serializ
         this.cpf = cpf;
     }
 
+    public Boolean getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         PersonDTO personDTO = (PersonDTO) o;
-        return Objects.equals(id, personDTO.id) && Objects.equals(nome, personDTO.nome) && Objects.equals(sobreNome, personDTO.sobreNome) && Objects.equals(email, personDTO.email) && Objects.equals(endereco, personDTO.endereco) && Objects.equals(dataNascimento, personDTO.dataNascimento) && Objects.equals(genero, personDTO.genero) && Objects.equals(cpf, personDTO.cpf);
+        return Objects.equals(id, personDTO.id) && Objects.equals(nome, personDTO.nome) && Objects.equals(sobreNome, personDTO.sobreNome) && Objects.equals(email, personDTO.email) && Objects.equals(endereco, personDTO.endereco) && Objects.equals(dataNascimento, personDTO.dataNascimento) && Objects.equals(genero, personDTO.genero) && Objects.equals(ativo, personDTO.ativo) && Objects.equals(cpf, personDTO.cpf);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nome, sobreNome, email, endereco, dataNascimento, genero, cpf);
+        return Objects.hash(super.hashCode(), id, nome, sobreNome, email, endereco, dataNascimento, genero, ativo, cpf);
+    }
+
+    @Override
+    public String toString() {
+        return "PersonDTO{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", sobreNome='" + sobreNome + '\'' +
+                ", email='" + email + '\'' +
+                ", endereco='" + endereco + '\'' +
+                ", dataNascimento=" + dataNascimento +
+                ", genero='" + genero + '\'' +
+                ", ativo=" + ativo +
+                ", cpf='" + cpf + '\'' +
+                '}';
     }
 }

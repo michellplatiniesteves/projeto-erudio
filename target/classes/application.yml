@@ -1,5 +1,8 @@
 
+cors:
+  originPatterns: https://localhost:8080,https://localhost:8081
 spring:
+  server: 8888
   application:
     name: projeto-erudio
   jpa:

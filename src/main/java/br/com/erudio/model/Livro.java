@@ -3,12 +3,20 @@ package br.com.erudio.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.*;
 
 import java.io.Serializable;
-import java.util.Locale;
+import java.util.Date;
+
 
 @Entity
 @Table
+@ToString
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
 public class Livro implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -20,7 +28,7 @@ public class Livro implements Serializable {
     @NotEmpty(message = "Informe o nome do autor do livro")
     private String autor;
     @Column
-    private Locale data_lancamento;
+    private Date data_lancamento;
     @Column
     @Min(value = 1)
     private double preco;

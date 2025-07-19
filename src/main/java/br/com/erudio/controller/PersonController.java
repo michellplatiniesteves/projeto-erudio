@@ -19,7 +19,6 @@ public class PersonController implements PersonControllerDocs {
 
     @Autowired
     private PersonService personService;
-
     @GetMapping(value = "/buscarID/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE,
             MediaType.APPLICATION_YAML_VALUE})
     @Override
@@ -53,5 +52,10 @@ public class PersonController implements PersonControllerDocs {
     public ResponseEntity<Void>deletar(@PathVariable(value = "id") Long id){
         personService.deletar(id);
         return ResponseEntity.noContent().build();
+    }
+    @PatchMapping (value = "/{id}")
+    @Override
+    public PersonDTO desablePerson(@PathVariable(value = "id") Long id){
+        return personService.desablePerson(id);
     }
 }

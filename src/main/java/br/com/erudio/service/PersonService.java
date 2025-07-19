@@ -9,6 +9,7 @@ import br.com.erudio.data.dto.v2.PersonDTOV2;
 import br.com.erudio.mapper.custom.PersonMapper;
 import br.com.erudio.model.Person;
 import br.com.erudio.repository.PersonRepository;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,16 @@ public class PersonService {
         var entity = parseObject(this.findById(id),Person.class);
         logger.info("deletar por ID");
         personRepository.delete(entity);
+    }
+    @Transactional
+    public PersonDTO desablePerson(Long id) {
+        this.findById(id);
+
+        logger.info("desabblePerson por ID");
+        personRepository.desablePerson(id);
+        var dto = parseObject(this.findById(id),PersonDTO.class);
+        addHateoasLinks(dto);
+        return dto;
     }
 
     public PersonDTO atualiza(PersonDTO person) {

@@ -30,4 +30,7 @@ public class Person implements Serializable {
     private String endereco;
     @Column
     private String genero;
+    @Column
+    private Boolean ativo;
+
 }
