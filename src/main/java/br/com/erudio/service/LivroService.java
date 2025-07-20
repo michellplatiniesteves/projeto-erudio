@@ -10,6 +10,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -28,11 +35,25 @@ public class LivroService {
     @Autowired
     private LivroRepository livroRepository;
 
-    public List<LivroDTO> buscarTodos() {
+    @Autowired
+    private PagedResourcesAssembler<LivroDTO> assembler;
+
+    public PagedModel<EntityModel<LivroDTO>> buscarTodos(Pageable pageable) {
         logger.info("Buscando todos os livros");
-        var dto = parseListObject(livroRepository.findAll(),LivroDTO.class);
-        dto.forEach(this::addHateoasLinks);
-        return dto;
+        var livros = livroRepository.findAll(pageable);
+        var colecaolivros = livros.map(livro -> {
+            var dto = parseObject(livro,LivroDTO.class);
+            addHateoasLinks(dto);
+            return dto;
+        });
+        Link findall= WebMvcLinkBuilder
+                      .linkTo(WebMvcLinkBuilder
+                              .methodOn(LivroController.class)
+                              .buscarTodos(pageable.getPageNumber()
+                                           ,pageable.getPageSize()
+                                           ,String.valueOf(pageable.getSort())))
+                              .withSelfRel();
+             return assembler.toModel(colecaolivros,findall);
     }
 
     public LivroDTO buscarId(Long id) {
@@ -66,7 +87,7 @@ public class LivroService {
 
     }
     public void addHateoasLinks(LivroDTO dto){
-        dto.add( linkTo(methodOn(LivroController.class).buscarTodos()).withRel("buscarTodos").withType("GET"));
+        dto.add( linkTo(methodOn(LivroController.class).buscarTodos(1,12,"asc")).withRel("buscarTodos").withType("GET"));
         dto.add( linkTo(methodOn(LivroController.class).salvarLivro(dto)).withRel("salvar").withType("POST"));
         dto.add( linkTo(methodOn(LivroController.class).deletar(dto.getId())).withRel("Deletar").withType("DELETE"));
         dto.add( linkTo(methodOn(LivroController.class).atualizarLivro(dto)).withRel("Atualizar").withType("PUT"));
