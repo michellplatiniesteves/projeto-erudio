@@ -1,6 +1,8 @@
 
 cors:
   originPatterns: https://localhost:8080,https://localhost:8081
+file:
+  upload-dir: /Users/miche/Downloads/file
 spring:
   server: 8888
   application:
@@ -14,6 +16,12 @@ spring:
           show-sql: true
           format-sql: true
     open-in-view: false
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 200MB
+      max-request-size: 215MB
   datasource:
     url: jdbc:postgresql://localhost:5433/projeto-erudio
     username: postgres

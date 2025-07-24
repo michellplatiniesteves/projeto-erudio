@@ -1,6 +1,8 @@
 package br.com.erudio.exception.hadler;
 
 import br.com.erudio.exception.ExceptionResponse;
+import br.com.erudio.exception.FileNotFoundException;
+import br.com.erudio.exception.FileStorageException;
 import br.com.erudio.exception.UnsupportedMathOperationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,5 +29,17 @@ public class CustomEntityResponseHadler extends ResponseEntityExceptionHandler {
 
         ExceptionResponse response = new ExceptionResponse(new Date(),e.getMessage(),request.getDescription(false));
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST) ;
+    }
+    @ExceptionHandler(FileStorageException.class)
+    public  final ResponseEntity<ExceptionResponse> hadlerFileStorageException(Exception e, WebRequest request){
+
+        ExceptionResponse response = new ExceptionResponse(new Date(),e.getMessage(),request.getDescription(false));
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR) ;
+    }
+    @ExceptionHandler(FileNotFoundException.class)
+    public  final ResponseEntity<ExceptionResponse> hadlerFileNotFoundException(Exception e, WebRequest request){
+
+        ExceptionResponse response = new ExceptionResponse(new Date(),e.getMessage(),request.getDescription(false));
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND) ;
     }
 }

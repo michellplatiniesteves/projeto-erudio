@@ -17,6 +17,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
@@ -40,56 +41,59 @@ public class PersonService {
     @Autowired
     private PersonMapper personMapper;
     @Autowired
-    private PagedResourcesAssembler<PersonDTO>assembler;
-    public PersonDTO findById(Long id){
+    private PagedResourcesAssembler<PersonDTO> assembler;
+
+    public PersonDTO findById(Long id) {
 
         logger.info("Busca realizado por ID");
-        var entity = personRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Person Não localizado"));
-        var dto = parseObject(entity,PersonDTO.class);
+        var entity = personRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Person Não localizado"));
+        var dto = parseObject(entity, PersonDTO.class);
         dto.setDataNascimento(new Date());
         dto.setGenero("Masculino");
         dto.setCpf("2424324324243242");
         addHateoasLinks(dto);
         return dto;
     }
-    public PagedModel<EntityModel<PersonDTO>> findByAll(Pageable pageable){
+
+    public PagedModel<EntityModel<PersonDTO>> findByAll(Pageable pageable) {
         logger.info("Busca Todos os person");
         var pessoas = personRepository.findAll(pageable);
-        var pagePessoa = pessoas.map(pessoa->{
-            var dto = parseObject(pessoa,PersonDTO.class);
+        var pagePessoa = pessoas.map(pessoa -> {
+            var dto = parseObject(pessoa, PersonDTO.class);
             addHateoasLinks(dto);
             return dto;
         });
         Link findAll = WebMvcLinkBuilder
-                      .linkTo(WebMvcLinkBuilder
-                              .methodOn(PersonController.class)
-                              .findByAll(pageable.getPageNumber(),
-                                          pageable.getPageSize(),
-                                         String.valueOf(pageable.getSort())))
+                .linkTo(WebMvcLinkBuilder
+                        .methodOn(PersonController.class)
+                        .findByAll(pageable.getPageNumber(),
+                                pageable.getPageSize(),
+                                String.valueOf(pageable.getSort())))
                 .withSelfRel();
-        return assembler.toModel(pagePessoa,findAll);
+        return assembler.toModel(pagePessoa, findAll);
     }
 
     public void deletar(Long id) {
-        var entity = parseObject(this.findById(id),Person.class);
+        var entity = parseObject(this.findById(id), Person.class);
         logger.info("deletar por ID");
         personRepository.delete(entity);
     }
+
     @Transactional
     public PersonDTO desablePerson(Long id) {
         this.findById(id);
 
         logger.info("desabblePerson por ID");
         personRepository.desablePerson(id);
-        var dto = parseObject(this.findById(id),PersonDTO.class);
+        var dto = parseObject(this.findById(id), PersonDTO.class);
         addHateoasLinks(dto);
         return dto;
     }
 
     public PersonDTO atualiza(PersonDTO person) {
         logger.info("Atualizar person");
-        var entity = parseObject(person,Person.class);
-        var dto = parseObject(personRepository.save(entity),PersonDTO.class);
+        var entity = parseObject(person, Person.class);
+        var dto = parseObject(personRepository.save(entity), PersonDTO.class);
         addHateoasLinks(dto);
         return dto;
     }
@@ -97,24 +101,44 @@ public class PersonService {
     public PersonDTO salvar(PersonDTO person) {
         logger.info("Salva os person");
         var entity = parseObject(person, Person.class);
-        var dto = parseObject(personRepository.save(entity),PersonDTO.class);
+        var dto = parseObject(personRepository.save(entity), PersonDTO.class);
         addHateoasLinks(dto);
         return dto;
 
     }
+
     public PersonDTOV2 salvarV2(PersonDTOV2 person) {
         logger.info("Salva os person versao V2");
         var entity = personMapper.converterDTOToEntity(person);
         return personMapper.converterEntityToDTO(personRepository.save(entity));
 
     }
-    private void addHateoasLinks(PersonDTO dto){
-        dto.add( linkTo(methodOn(PersonController.class).findById(dto.getId())).withRel("Buscar Por ID").withType("GET"));
-        dto.add( linkTo(methodOn(PersonController.class).findByAll(1,12,"asc")).withRel("buscarTodos").withType("GET"));
-        dto.add( linkTo(methodOn(PersonController.class).salvar(dto)).withRel("salvar").withType("POST"));
-        dto.add( linkTo(methodOn(PersonController.class).deletar(dto.getId())).withRel("Deletar").withType("DELETE"));
-        dto.add( linkTo(methodOn(PersonController.class).atualiza(dto)).withRel("Atualizar").withType("PUT"));
+
+    private void addHateoasLinks(PersonDTO dto) {
+        dto.add(linkTo(methodOn(PersonController.class).findById(dto.getId())).withRel("Buscar Por ID").withType("GET"));
+        dto.add(linkTo(methodOn(PersonController.class).findByAll(1, 12, "asc")).withRel("buscarTodos").withType("GET"));
+        dto.add(linkTo(methodOn(PersonController.class).salvar(dto)).withRel("salvar").withType("POST"));
+        dto.add(linkTo(methodOn(PersonController.class).deletar(dto.getId())).withRel("Deletar").withType("DELETE"));
+        dto.add(linkTo(methodOn(PersonController.class).atualiza(dto)).withRel("Atualizar").withType("PUT"));
 
 
+    }
+
+    public PagedModel<EntityModel<PersonDTO>> findByNome(String nome, PageRequest pageable) {
+        logger.info("Busca os person por nome");
+        var pessoas = personRepository.findByName(nome, pageable);
+        var pagePessoa = pessoas.map(pessoa -> {
+            var dto = parseObject(pessoa, PersonDTO.class);
+            addHateoasLinks(dto);
+            return dto;
+        });
+        Link findAll = WebMvcLinkBuilder
+                .linkTo(WebMvcLinkBuilder
+                        .methodOn(PersonController.class)
+                        .findByAll(pageable.getPageNumber(),
+                                pageable.getPageSize(),
+                                String.valueOf(pageable.getSort())))
+                .withSelfRel();
+        return assembler.toModel(pagePessoa, findAll);
     }
 }
