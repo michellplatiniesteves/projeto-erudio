@@ -2,10 +2,16 @@ package br.com.erudio.service;
 
 import br.com.erudio.controller.PersonController;
 import br.com.erudio.data.dto.v1.PersonDTO;
-import static br.com.erudio.mapper.ObjectMapper.parseListObject;
+
 import static br.com.erudio.mapper.ObjectMapper.parseObject;
 
 import br.com.erudio.data.dto.v2.PersonDTOV2;
+import br.com.erudio.exception.BadRequestException;
+import br.com.erudio.exception.FileStorageException;
+import br.com.erudio.file.exporter.contract.FileExporter;
+import br.com.erudio.file.exporter.factory.FileExporterFactory;
+import br.com.erudio.file.importer.contract.FileImporter;
+import br.com.erudio.file.importer.factory.FileImporterFactory;
 import br.com.erudio.mapper.custom.PersonMapper;
 import br.com.erudio.model.Person;
 import br.com.erudio.repository.PersonRepository;
@@ -16,7 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import org.springframework.data.domain.Page;
+
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -26,10 +33,14 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service
@@ -42,7 +53,11 @@ public class PersonService {
     private PersonMapper personMapper;
     @Autowired
     private PagedResourcesAssembler<PersonDTO> assembler;
+    @Autowired
+    private FileImporterFactory fileImporterFactory;
 
+    @Autowired
+    private FileExporterFactory fileExporterFactory;
     public PersonDTO findById(Long id) {
 
         logger.info("Busca realizado por ID");
@@ -120,6 +135,7 @@ public class PersonService {
         dto.add(linkTo(methodOn(PersonController.class).salvar(dto)).withRel("salvar").withType("POST"));
         dto.add(linkTo(methodOn(PersonController.class).deletar(dto.getId())).withRel("Deletar").withType("DELETE"));
         dto.add(linkTo(methodOn(PersonController.class).atualiza(dto)).withRel("Atualizar").withType("PUT"));
+        dto.add(linkTo(methodOn(PersonController.class)).slash("AdicionarPlanilhas").withRel("AdicionarPlanilhas").withType("POST"));
 
 
     }
@@ -140,5 +156,59 @@ public class PersonService {
                                 String.valueOf(pageable.getSort())))
                 .withSelfRel();
         return assembler.toModel(pagePessoa, findAll);
+    }
+
+    public List<PersonDTO> AdicionarPlanilhas(MultipartFile file){
+        logger.info("importando planilha");
+        if (file.isEmpty()) throw new BadRequestException("Planilha vazia");
+
+        try (InputStream inputStream = file.getInputStream()) {
+            String fileName = Optional.ofNullable(file
+                            .getOriginalFilename())
+                    .orElseThrow(() -> new BadRequestException("Planilha vazia"));
+
+            FileImporter importer = this.fileImporterFactory.getImporter(fileName);
+            List<Person> entities = importer.importFile(inputStream).stream()
+                    .map(dto -> {
+                            var entity = parseObject(dto, Person.class);
+                        return personRepository.save(entity);
+                    }).toList();
+
+            return entities.stream()
+                           .map(pessoa -> {
+                               var dto = parseObject(pessoa, PersonDTO.class);
+                           addHateoasLinks(dto);
+                         return dto;
+                 }).toList();
+        } catch (Exception e) {
+            throw new FileStorageException("Erro no processamento do arquivo");
+        }
+
+    }
+    public Resource exportarArquivo(Pageable pageable, String acceptHeader) {
+        logger.info("exportantodo arquivo");
+        var pessoas = personRepository.findAll(pageable)
+                .map(pessoa -> parseObject(pessoa, PersonDTO.class))
+                .getContent();
+        try {
+            FileExporter fileExporter = this.fileExporterFactory.getExporter(acceptHeader);
+            return fileExporter.exportFile(pessoas);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao exportar o arquivo");
+        }
+
+    }
+    public Resource exportarPerson(Long id, String acceptHeader) {
+        logger.info("exportantodo pessoas");
+        var pessoa = personRepository.findById(id)
+                .map(entity->parseObject(entity, PersonDTO.class))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Person Não localizado"));
+        try {
+            FileExporter fileExporter = this.fileExporterFactory.getExporter(acceptHeader);
+            return fileExporter.exportPerson(pessoa);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao exportar o arquivo");
+        }
+
     }
 }

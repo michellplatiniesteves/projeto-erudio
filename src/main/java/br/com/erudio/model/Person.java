@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "person")
@@ -32,5 +33,20 @@ public class Person implements Serializable {
     private String genero;
     @Column
     private Boolean ativo;
+
+    @Column(name = "wikipedia_profile_url",length = 255)
+    private String profileUrl;
+
+    @Column(name = "photo_url",length = 255)
+    private String photoUrl;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "person_books",
+            joinColumns = @JoinColumn(name = "person_id"),
+            inverseJoinColumns= @JoinColumn(name = "livro_id")
+    )
+    private List<Livro>livros;
+
 
 }
