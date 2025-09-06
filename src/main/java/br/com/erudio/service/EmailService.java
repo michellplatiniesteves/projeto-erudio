@@ -2,10 +2,8 @@ package br.com.erudio.service;
 
 import br.com.erudio.config.EmailConfig;
 import br.com.erudio.data.dto.EmailDTO;
-import br.com.erudio.mail.EamilSender;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import br.com.erudio.mail.EmailSender;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.mail.internet.AddressException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,7 +14,7 @@ import java.io.IOException;
 @Service
 public class EmailService {
     @Autowired
-    private EamilSender sender;
+    private EmailSender sender;
     @Autowired
     private EmailConfig config;
 

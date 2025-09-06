@@ -3,6 +3,12 @@ cors:
   originPatterns: https://localhost:8080,https://localhost:8081
 file:
   upload-dir: /Users/miche/Downloads/file
+security:
+  jwt:
+    token:
+      secret-key: thisIsMysecregtfrdesww233eggtffeeddgkjjhhtdhttebd54ndhdhfhhhshs8877465sbbdd
+      expire-length: 3600000
+  upload-dir: /Users/miche/Downloads/file
 email:
   subject: "Defaut subject"
   message: "Defaut message"

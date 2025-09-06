@@ -24,10 +24,15 @@ public class FileStorageService {
 
     private final Path fileStorageLocation;
     private static  final Logger logger = LoggerFactory.getLogger(FileStorageService.class) ;
+
+    public FileStorageService(Path fileStorageLocation) {
+        this.fileStorageLocation = fileStorageLocation;
+    }
+
     @Autowired
     public FileStorageService(FileStorageConfig fileStorageConfig){
-        Path path = Paths.get(fileStorageConfig.getUpload_dir()).toAbsolutePath().toAbsolutePath().normalize();
-        this.fileStorageLocation = path;
+        if(!fileStorageConfig.getUploadDir().isEmpty()) {
+            this.fileStorageLocation = Paths.get(fileStorageConfig.getUploadDir()).toAbsolutePath().toAbsolutePath().normalize();
             try {
                 logger.info("Criando diretorio");
                 Files.createDirectories(this.fileStorageLocation);
@@ -35,6 +40,10 @@ public class FileStorageService {
                 logger.info("Não foi possivel criar diretorio");
                 throw new FileStorageException("Não foi possivel criar diretorio",e);
             }
+        }else{
+            throw new FileStorageException("Direotrio não Localizado");
+        }
+
     }
 
 

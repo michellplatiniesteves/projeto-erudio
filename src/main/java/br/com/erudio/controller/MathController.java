@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/math")
+@RequestMapping("/api/math")
 public class MathController {
 
     private static NumberConverter numberConverter;

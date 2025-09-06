@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
-@RequestMapping("/greeting")
+@RequestMapping("/api/greeting")
 public class GreetingController {
     private static final String template = "Seja bem vindo %s;";
     private AtomicLong counter = new AtomicLong();

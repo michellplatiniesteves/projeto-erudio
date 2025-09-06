@@ -5,7 +5,6 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
-import org.apache.xmlbeans.impl.soap.MimeHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -18,19 +17,19 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 @Component
-public class EamilSender implements Serializable {
+public class EmailSender implements Serializable {
     private final JavaMailSender sender;
     private String to;
     private String body;
     private String subject;
     private ArrayList<InternetAddress> recebedores = new ArrayList<>();
     private File file;
-    private Logger logger = LoggerFactory.getLogger(EamilSender.class);
-    public EamilSender(JavaMailSender sender) {
+    private Logger logger = LoggerFactory.getLogger(EmailSender.class);
+    public EmailSender(JavaMailSender sender) {
         this.sender = sender;
     }
 
-    public EamilSender to(String to){
+    public EmailSender to(String to){
         this.to = to;
         this.recebedores = getRecebedores(to);
         return  this;
@@ -50,12 +49,12 @@ public class EamilSender implements Serializable {
         return recebedoresList;
     }
 
-    public EamilSender setBody(String body) {
+    public EmailSender setBody(String body) {
         this.body = body;
         return this;
     }
 
-    public EamilSender setSubject(String subject) {
+    public EmailSender setSubject(String subject) {
         this.subject = subject;
         return this;
     }
@@ -64,7 +63,7 @@ public class EamilSender implements Serializable {
         this.recebedores = recebedores;
     }
 
-    public EamilSender setFile(String file) {
+    public EmailSender setFile(String file) {
         this.file = new File(file);
         return this;
     }

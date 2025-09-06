@@ -9,13 +9,13 @@ public class FileStorageConfig {
     public FileStorageConfig() {
     }
 
-    private String upload_dir;
+    private String uploadDir;
 
-    public String getUpload_dir() {
-        return upload_dir;
+    public String getUploadDir() {
+        return uploadDir;
     }
 
-    public void setUpload_dir(String upload_dir) {
-        this.upload_dir = upload_dir;
+    public void setUploadDir(String uploadDir) {
+        this.uploadDir = uploadDir;
     }
 }

@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/person")
+@RequestMapping("/api/person")
 @Tag(name = "Person",description ="End Point de Person")
 public class PersonController implements PersonControllerDocs {
 
