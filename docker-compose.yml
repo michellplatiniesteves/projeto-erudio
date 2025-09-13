@@ -1,0 +1,49 @@
+version: '3.4'
+
+services:
+  # Serviço da aplicação Spring Boot
+  projeto-erudio:
+    image: michellplatini/projeto-erudio
+    restart: always
+    build: .  # Use '.' para construir a imagem a partir do diretório atual
+    working_dir: /projeto-erudio
+    command: java -jar target/projeto-erudio.jar --flyway.repair-on-migrate=true
+    environment:
+      TZ: America/Sao_Paulo
+      # AQUI VOCÊ MUDA O HOST:
+      # Use o nome do serviço do banco de dados (por exemplo, 'db') em vez de 'localhost'
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/projeto-erudio
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      FLYWAY_REPAIR_ON_MIGRATE: "true"
+    ports:
+      - "127.0.0.1:8080:80" # Mapeie a porta correta da aplicação (8080)
+    depends_on:
+      - db  # Garante que o banco de dados inicie antes da aplicação
+    networks:
+      - erudio-network
+
+  # NOVO SERVIÇO: Serviço do banco de dados PostgreSQL
+  db:
+    image: postgres:15.5  # Use a imagem oficial do PostgreSQL
+    restart: always
+    container_name: postgres-db-projeto-erudio
+    environment:
+      POSTGRES_DB: projeto-erudio
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      TZ: America/Sao_Paulo
+    ports:
+      - "5433:5432" # Mapeia a porta do contêiner para a porta do host
+    volumes:
+      - db_data:/var/lib/postgresql/data # Persiste os dados do banco de dados
+    networks:
+      - erudio-network
+
+# Define a rede e os volumes
+networks:
+  erudio-network:
+    driver: bridge
+
+volumes:
+  db_data:

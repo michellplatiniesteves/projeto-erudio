@@ -10,13 +10,14 @@ import java.util.Date;
 
 
 @Entity
-@Table
 @ToString
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
+
+@Table(name = "livro")
 public class Livro implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -1,0 +1,8 @@
+br\com\erudio\integracao\container\AbstractIntregrationTestTest.class
+br\com\erudio\integracao\container\AbstractIntregrationTest$Initializer.class
+br\com\erudio\integracao\container\AbstractIntregrationTest.class
+br\com\erudio\integracao\container\swagger\SwaggerTest.class
+br\com\erudio\unitestes\mapper\MockPerson.class
+br\com\erudio\config\TestConfigs.class
+br\com\erudio\ProjetoErudioApplicationTests.class
+br\com\erudio\service\PersonServiceTest.class

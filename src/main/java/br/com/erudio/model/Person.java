@@ -8,13 +8,13 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "person")
 @ToString
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
+@Table(name = "person")
 public class Person implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

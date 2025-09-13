@@ -1,4 +1,6 @@
 
+server:
+  port: 80
 cors:
   originPatterns: https://localhost:8080,https://localhost:8081
 file:
