@@ -30,9 +30,9 @@ jobs:
     - name: Docker Compose Build
       run: docker compose build
 
-    - name:  Push to Docker Hub Container Registry
+    - name: Push to Docker Hub Container Registry
       run:
-         docker tag ${{ secrets.DOCKER_USER }}/projeto-erudio:latest ${{ secrets.DOCKER_USER }}/projeto-erudio:${{github.run_id}}
+        docker tag ${{ secrets.DOCKER_USER }}/projeto-erudio:latest ${{ secrets.DOCKER_USER }}/projeto-erudio:${{github.run_id}}
         
-         docker push ${{ secrets.DOCKER_USER }}/projeto-erudio:latest
-         docker push ${{ secrets.DOCKER_USER }}/projeto-erudio:${{github.run_id}}
+        docker push ${{ secrets.DOCKER_USER }}/projeto-erudio:latest
+        docker push ${{ secrets.DOCKER_USER }}/projeto-erudio:${{github.run_id}}
