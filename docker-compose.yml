@@ -39,7 +39,17 @@ services:
       - db_data:/var/lib/postgresql/data # Persiste os dados do banco de dados
     networks:
       - erudio-network
-
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer-projeto-erudio
+    restart: always
+    ports:
+       - 9000:9000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      - erudio-network
 # Define a rede e os volumes
 networks:
   erudio-network:
@@ -47,3 +57,4 @@ networks:
 
 volumes:
   db_data:
+  portainer_data:
