@@ -25,7 +25,7 @@ jobs:
           java-version: '21'
           cache: maven
     - name: Build Application .jar
-      working-directory: ./Users/miche/git/projeto-erudio
+      working-directory: C:/Users/miche/git/projeto-erudio
       run: mvn clean package -DskipTests=true
 
     - name: Docker Compose Build
