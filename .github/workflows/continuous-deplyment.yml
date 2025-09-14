@@ -28,7 +28,6 @@ jobs:
       run: mvn clean package -DskipTests=true
 
     - name: Docker Compose Build
-      working-directory: ./Users/miche/git/projeto-erudio
       run: docker compose build
 
     - name:  Push to Docker Hub Container Registry
