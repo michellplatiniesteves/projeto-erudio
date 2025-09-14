@@ -31,8 +31,7 @@ jobs:
       run: docker compose build
 
     - name: Push to Docker Hub Container Registry
-      run:
+      run: |
         docker tag ${{ secrets.DOCKER_USER }}/projeto-erudio:latest ${{ secrets.DOCKER_USER }}/projeto-erudio:${{github.run_id}}
-        
         docker push ${{ secrets.DOCKER_USER }}/projeto-erudio:latest
         docker push ${{ secrets.DOCKER_USER }}/projeto-erudio:${{github.run_id}}
